@@ -46,5 +46,5 @@ git diff --check
 ## 提交流程
 
 從最新 `master` 建立短期 feature branch，透過 PR 合併；不直接 push `master`。
-Phase 00 的空白基底初始化已取得一次性授權；目前受限於 Git 推送環境尚未完成，
-見 [初始化狀態](docs/release/phase-00.md)。此授權僅涵蓋指定的零檔案 commit，不涵蓋直接寫入 Phase 00 檔案。
+Phase 00 的零檔案基底已依一次性授權建立；全部文件透過 [PR #1](https://github.com/3pwei/eyelink-ios/pull/1) 提交，待審查合併。
+見 [交付狀態](docs/release/phase-00.md)。後續變更繼續遵守 feature branch 與 PR 流程。

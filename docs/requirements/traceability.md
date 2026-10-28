@@ -44,10 +44,10 @@ Acceptance IDs are planned test cases, not existing test code.
 
 | ID | Criterion | Current evidence / state |
 | --- | --- | --- |
-| P00-REPO | Read remote before changes; reuse repository; preserve `master` default | API + clone inspection: empty remote, no refs/PRs; no remote writes |
-| P00-DOCS | Root files, four docs directories, architecture, engineering rules, traceability | Files prepared; results recorded in [Phase 00 report](../release/phase-00.md) |
+| P00-REPO | Read remote before changes; reuse repository; preserve `master` default | Passed: existing repo reused; owner initialized zero-file ec3cd14; master remains default |
+| P00-DOCS | Root files, four docs directories, architecture, engineering rules, traceability | 18 files submitted in PR #1; results recorded in [Phase 00 report](../release/phase-00.md) |
 | P00-CI | Document XcodeGen/Codemagic without starting paid build | Planning document only; no root CI config/workflow |
-| P00-PR | Submit feature branch PR targeting `master` | Bootstrap authorized; Git push authentication unavailable; no remote branch or PR created |
+| P00-PR | Submit feature branch PR targeting `master` | Passed: [PR #1](https://github.com/3pwei/eyelink-ios/pull/1), feature branch → master; open, not merged |
 
 ## Status and evidence rules
 

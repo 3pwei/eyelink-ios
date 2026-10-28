@@ -7,8 +7,9 @@ The full Camera/BLE/REST/Offline Sync feature set is not a Phase 01 entry requir
 ## Ready to implement
 
 - [x] Obtain explicit owner authorization for zero-file baseline `ec3cd14` only.
-- [ ] Establish that authorized baseline using an authenticated Git client; current workspace push failed before any remote write.
-- [ ] Phase 00 is submitted through a feature branch PR, reviewed and merged by the owner.
+- [x] Establish the authorized zero-file baseline; remote master verified at `ec3cd14`.
+- [x] Submit Phase 00 through [PR #1](https://github.com/3pwei/eyelink-ios/pull/1), targeting `master`.
+- [ ] Phase 00 PR is reviewed and merged by the owner.
 - [ ] Confirm architecture decisions, MIT license proposal, iOS 17.0 baseline and actual iPhone OS compatibility.
 - [ ] Agree on minimal screens/use cases and the first synthetic measurement shape; keep payload units explicit.
 - [ ] Select exact toolchain versions, bundle identifier and initial simulator target in a reviewed change.
