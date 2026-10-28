@@ -1,0 +1,47 @@
+# OS / editors
+.DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+.vscode/
+*.swp
+
+# Generated Xcode project (project.yml will be the source of truth)
+*.xcodeproj/
+*.xcworkspace/
+xcuserdata/
+*.xcuserstate
+DerivedData/
+build/
+.build/
+.swiftpm/
+*.xcresult/
+*.xcarchive/
+*.ipa
+*.dSYM/
+*.dSYM.zip
+
+# Local configuration and signing material
+.env
+.env.*
+!.env.example
+*.local.xcconfig
+*.p12
+*.p8
+*.mobileprovision
+*.provisionprofile
+*.cer
+*.keychain-db
+
+# Runtime data / generated evidence; use synthetic reviewed fixtures explicitly
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.store
+*.store-shm
+*.store-wal
+artifacts/
+__pycache__/
+*.py[cod]
+
+# Keep dependency locks tracked, including future Package.resolved.
