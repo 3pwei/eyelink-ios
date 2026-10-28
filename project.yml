@@ -56,12 +56,24 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: io.github.3pwei.eyelink.tests
+  EyeLinkUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: EyeLinkUITests
+    dependencies:
+      - target: EyeLink
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.3pwei.eyelink.uitests
+        TARGETED_DEVICE_FAMILY: "1"
 schemes:
   EyeLink:
     build:
       targets:
         EyeLink: all
         EyeLinkTests: [test]
+        EyeLinkUITests: [test]
     run:
       config: Debug
     test:
@@ -69,5 +81,6 @@ schemes:
       gatherCoverageData: true
       targets:
         - EyeLinkTests
+        - EyeLinkUITests
     archive:
       config: Release
