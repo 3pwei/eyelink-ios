@@ -1,6 +1,6 @@
 # Testing strategy
 
-Status: planned. No Swift tests, iOS builds, simulator runs or iPhone runs have occurred in Phase 00.
+Status: Phase 00 had no Swift sources or runtime verification. Phase 01 XCTest sources now exist, but have not run; see [Phase 01 cases and commands](phase-01.md). iOS builds, simulator and iPhone acceptance remain Unverified.
 
 ## Verification levels
 

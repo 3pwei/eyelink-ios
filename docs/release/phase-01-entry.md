@@ -9,11 +9,11 @@ The full Camera/BLE/REST/Offline Sync feature set is not a Phase 01 entry requir
 - [x] Obtain explicit owner authorization for zero-file baseline `ec3cd14` only.
 - [x] Establish the authorized zero-file baseline; remote master verified at `ec3cd14`.
 - [x] Submit Phase 00 through [PR #1](https://github.com/3pwei/eyelink-ios/pull/1), targeting `master`.
-- [ ] Phase 00 PR is reviewed and merged by the owner.
+- [x] Phase 00 PR #1 merged; Phase 01 base is `79824ac3351f21285e9080e259b19826c0d8b307`.
 - [ ] Confirm architecture decisions, MIT license proposal, iOS 17.0 baseline and actual iPhone OS compatibility.
-- [ ] Agree on minimal screens/use cases and the first synthetic measurement shape; keep payload units explicit.
+- [x] Owner requested Dashboard / Examination / Result and mock-only flow; ADR-011 defines arbitrary test points with no physical/medical unit.
 - [ ] Select exact toolchain versions, bundle identifier and initial simulator target in a reviewed change.
-- [ ] Define Phase 01 acceptance cases and evidence locations; mark unrun cases accurately.
+- [x] Phase 01 cases and evidence locations are defined in [testing](../testing/phase-01.md); execution remains unverified.
 
 ## Ready to run cloud validation (separate gate)
 
@@ -37,3 +37,12 @@ An unbuilt skeleton must remain `Implemented / Unverified`.
 Reproducible XcodeGen generation, successful simulator build, app launch and basic UI/unit tests tied to an exact SHA.
 Mock mode visible; minimum lifecycle/state handling exercised; pending requirements retain honest status.
 No real BLE, camera, server or background-execution completion claim follows from a skeleton build alone.
+
+## Current authorization and remaining gates
+
+The owner's Phase 01 request authorizes source implementation and PR submission without restarting Phase 00.
+It explicitly permits an uncompiled delivery labeled Unverified. Toolchain selection, actual iPhone compatibility,
+macOS execution and cloud budget remain separate gates; they do not block this source-only delivery.
+ADR-012/013 document the language-mode setting and unsigned development bundle ID without asserting a
+verified version tuple or Apple registration. No signing or Codemagic workflow was configured.
+See [Phase 01 delivery and Phase 02 entry conditions](phase-01.md).
