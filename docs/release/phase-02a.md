@@ -13,6 +13,7 @@ Only the composition root and a Dashboard accessibility identifier change existi
 The full [runbook and review matrix](../testing/phase-02a.md) separates real MockDevice flows from frozen
 state rendering fixtures. See [traceability](../requirements/traceability.md) for P02A cases.
 No source/static check qualifies as an iOS build. No screenshot, xcresult, build ID or paid run is claimed.
+Actual Linux checks and source SHA are in the [preparation evidence record](../testing/evidence/phase-02a-static.md).
 
 | Requested acceptance | Current status |
 | --- | --- |

@@ -2,6 +2,7 @@
 
 狀態：**設定／測試程式 Implemented / Unverified；macOS 執行 Blocked**。
 日期：2026-10-29（Asia/Taipei）。本文件不是 Build Passed 或 Simulator 驗證結果。
+已執行的 Linux 檢查見 [準備階段證據](evidence/phase-02a-static.md)。
 
 ## 起點與範圍
 
