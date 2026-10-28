@@ -36,7 +36,7 @@ the previous result. Full discovery, radio permissions and packet-level scenario
 ## Verification limits
 
 Run [Phase 01 checks](../testing/phase-01.md) for static validation and the future macOS command sequence.
-Actual check output and exact source commit are recorded in `docs/testing/evidence/` at handoff.
+Actual check output and exact source commit are in [the Phase 01 evidence record](../testing/evidence/phase-01-static.md).
 Linux/Python checks do not validate Swift syntax, actor diagnostics, XcodeGen generation or Apple SDK APIs.
 All XCTest runtime results, SwiftUI rendering, accessibility, iOS builds and iPhone compatibility are Unverified.
 There is no claim of iOS Build Passed or a verified toolchain version tuple.
@@ -53,3 +53,35 @@ There is no claim of iOS Build Passed or a verified toolchain version tuple.
    persistence/schema/retention for storage; API/auth/idempotency for networking. No such feature is implied here.
 
 Rollback is reverting this feature's source/configuration/docs through a reviewed PR; no data migration exists.
+
+## Changed file inventory
+
+- `AGENTS.md`
+- `EyeLink/App/EyeLinkApp.swift`
+- `EyeLink/Domain/DeviceModels.swift`
+- `EyeLink/Domain/DeviceTransport/DeviceTransport.swift`
+- `EyeLink/Features/Devices/DeviceDashboardView.swift`
+- `EyeLink/Features/Devices/DeviceSessionModel.swift`
+- `EyeLink/Features/Measurements/ExaminationView.swift`
+- `EyeLink/Features/Measurements/ResultView.swift`
+- `EyeLink/Features/Shared/SessionStatusView.swift`
+- `EyeLink/Infrastructure/Mock/DeviceClock.swift`
+- `EyeLink/Infrastructure/Mock/MockDevice.swift`
+- `EyeLink/Resources/Assets.xcassets/AccentColor.colorset/Contents.json`
+- `EyeLink/Resources/Assets.xcassets/Contents.json`
+- `EyeLinkTests/DeviceSessionModelTests.swift`
+- `EyeLinkTests/MockDeviceTests.swift`
+- `EyeLinkTests/TestSupport/ManualDeviceClock.swift`
+- `README.md`
+- `docs/architecture/decisions.md`
+- `docs/architecture/device-transport.md`
+- `docs/architecture/overview.md`
+- `docs/release/build-plan.md`
+- `docs/release/phase-01-entry.md`
+- `docs/release/phase-01.md`
+- `docs/requirements/traceability.md`
+- `docs/testing/evidence/phase-01-static.md`
+- `docs/testing/phase-01.md`
+- `docs/testing/strategy.md`
+- `project.yml`
+- `scripts/check_phase01.py`
