@@ -1,6 +1,6 @@
 # Architecture plan
 
-Status: **Proposed in Phase 00; no implementation or iOS validation.**
+Status: Phase 00 architecture retained. Phase 01 native/mock subset is **Implemented / Unverified**; see [Phase 01 delivery](../release/phase-01.md). Later-feature sections remain plans.
 
 ## Dependency boundaries
 
@@ -85,3 +85,21 @@ Logs must redact tokens, images, measurement payloads and device identifiers.
 - [Apple SwiftData ModelContainer](https://developer.apple.com/documentation/swiftdata/modelcontainer)
 - [Apple ModelContext](https://developer.apple.com/documentation/swiftdata/modelcontext)
 - [Apple sensor authorization and usage descriptions](https://developer.apple.com/documentation/technologyoverviews/device-sensors)
+
+## Phase 01 implemented layout and boundary
+
+- `EyeLink/App/`: SwiftUI entry, composition root, explicit MockScenario selection, scene handling.
+- `EyeLink/Features/Devices/`, `Measurements/`, `Shared/`: Presentation views and MainActor session model.
+- `EyeLink/Domain/`: Sendable snapshots/results/errors; `DeviceTransport/` owns the replaceable protocol.
+- `EyeLink/Infrastructure/Mock/`: shipping demo MockDevice and injectable clock; no Apple hardware frameworks.
+- `EyeLinkTests/TestSupport/`: manually advanced clock; cancellation and stale-completion fixtures.
+- `EyeLink/Resources/`: accent asset catalog; no permission descriptions because restricted features are absent.
+
+This retains ADR-004's single App target. MockDevice lives in Infrastructure because the demo App uses it;
+only test-specific helpers live in TestSupport. Presentation depends solely on Domain, not MockDevice.
+See ADR-011/012 for the narrow Phase 01 contract and provisional build choices.
+
+The foreground session disconnects on inactive/background; resume requires explicit Connect.
+No persistence or durable success is promised: completed synthetic results are in memory only.
+New connect/measurement clears the old result; ordinary disconnect retains a completed result for viewing.
+Cancelling an in-progress measurement clears it and returns to idle; errors require explicit reconnect.

@@ -1,6 +1,6 @@
 # DeviceTransport and MockDevice contract
 
-Status: **Design only**. Method names below are a proposed contract, not compiled Swift source.
+Status: Phase 00 full-device design below remains proposed. The Phase 01 subset is **Implemented / Unverified** as described at the end; none of this is BLE hardware evidence.
 
 ## Contract surface
 
@@ -61,3 +61,34 @@ MockDevice can be a deliberate demo mode; it must never silently replace a faile
 
 Run common contract tests against MockDevice and, where possible, the adapter with fake delegate inputs.
 Only hardware integration tests can verify actual Core Bluetooth/peripheral interoperability.
+
+## Phase 01 concrete contract
+
+Source: [DeviceTransport.swift](../../EyeLink/Domain/DeviceTransport/DeviceTransport.swift).
+All protocol access is MainActor isolated; snapshots/results/errors are Sendable values.
+No SwiftUI, SwiftData or Core Bluetooth import is allowed in Domain.
+
+| Operation / state | Phase 01 behavior |
+| --- | --- |
+| connect from idle/failed | connecting → ready after one injected clock tick; scripted failure → failed |
+| connect while ready | Idempotent; no additional work |
+| overlapping connect/measurement | Throws operationInProgress, leaves current operation untouched |
+| startMeasurement from ready | measuring → ready with result after four ticks |
+| startMeasurement from idle/failed | Throws invalidState without state change |
+| cancelMeasurement while measuring | Cancels owned task, invalidates generation, clears progress, idle with cancelled reason; reconnect required |
+| cancelMeasurement otherwise | No-op |
+| disconnect | Idempotent teardown; pending operations cancelled, idle; interrupted work exposes disconnected reason |
+| timeout / scripted mid-measurement disconnect | failed, no result; reconnect explicitly |
+| deviceState / measurementResult | Read-only domain values via current snapshot |
+| snapshots | Initial/current complete snapshots, one-element newest buffer; result/error retained, progress may coalesce |
+
+Each explicit operation gets a generation token; stale completions cannot alter a new session or clear its
+operation handle. Cancellation of the caller forwards to the owned Task. Explicit teardown returns a
+cancelled error to the suspended caller while the snapshot retains the user-facing disconnect/cancel reason.
+The DemoDeviceClock is cancellable and uses 500 ms ticks only for the interactive demo; tests manually advance
+suspensions and inject time, including deliberately uncooperative old work.
+
+Four selectable scripts: success, connectionFailure, measurementTimeout, disconnectDuringMeasurement.
+User cancellation and duplicate starts are actions on these scripts, with dedicated tests.
+Timeout is a deterministic scripted failure at tick four, not a verified real-device deadline implementation.
+No scan, permission/radio model, generic send, packet parser or lossless events API is implemented yet.

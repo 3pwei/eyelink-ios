@@ -2,21 +2,21 @@
 
 Baseline: 2026-10-29. The six skill areas below come from the requested iOS job alignment;
 no employer-specific job description was supplied, so this is not a verbatim job-spec audit.
-All product requirements are **Planned / Not implemented / Not verified** in Phase 00.
-Acceptance IDs are planned test cases, not existing test code.
+All product requirements were Planned in Phase 00. Phase 01 implements only the native/mock subset below,
+with **Implemented / Unverified** status. Original acceptance cases remain specifications unless mapped below.
 
 ## Capability map
 
 | Requirement | Job skill / intended behavior | Architecture | Planned acceptance cases | Required evidence | Status |
 | --- | --- | --- | --- | --- | --- |
-| EL-UI-001 | SwiftUI: device list, measurement and history views show loading/empty/success/error; mock mode visible | ADR-001; Presentation | AC-UI-01, AC-UI-02 | Simulator UI test, screenshots, accessibility checks | Planned |
-| EL-LC-001 | Lifecycle: active/inactive/background safely pause resources and reconcile persisted state on resume | ADR-001, ADR-009; App coordinator | AC-LC-01, AC-LC-02 | Unit/UI tests plus iPhone lifecycle recording | Planned |
+| EL-UI-001 | SwiftUI: device list, measurement and history views show loading/empty/success/error; mock mode visible | ADR-001; Presentation | AC-UI-01, AC-UI-02 | Simulator UI test, screenshots, accessibility checks | Partial: Phase 01 screens Implemented / Unverified; discovery/history Planned |
+| EL-LC-001 | Lifecycle: active/inactive/background safely pause resources and reconcile persisted state on resume | ADR-001, ADR-009; App coordinator | AC-LC-01, AC-LC-02 | Unit/UI tests plus iPhone lifecycle recording | Partial: foreground mock teardown Implemented / Unverified; persistence lifecycle Planned |
 | EL-CAM-001 | Camera: request access at point of use, capture a still image, handle refusal/interruption | CameraService | AC-CAM-01, AC-CAM-02 | iPhone model/OS, permission cases, capture evidence | Planned |
 | EL-BLE-001 | BLE: discover/connect/subscribe/command/disconnect with typed errors and cancellation | ADR-003; DeviceTransport | AC-BLE-01, AC-BLE-02, AC-BLE-03 | Contract tests plus iPhone + specified peripheral/firmware logs | Planned |
 | EL-API-001 | REST API: typed requests/responses, timeout/cancellation, auth and HTTP errors | ADR-005; APIClient | AC-API-01, AC-API-02 | Stub tests and separate staging contract run | Planned |
 | EL-SYNC-001 | Offline Sync: durable local record/outbox, replay safely after connectivity returns | ADR-002, ADR-005; Repository + SyncWorker | AC-SYNC-01, AC-SYNC-02, AC-SYNC-03 | Persistence/restart/fault tests and server idempotency evidence | Planned |
 | EL-DATA-001 | SwiftData: local create/read and schema evolution without silent data loss | ADR-002; Persistence | AC-DATA-01, AC-DATA-02 | File-backed store reopen and migration fixtures | Planned |
-| EL-MOCK-001 | MockDevice: deterministic scenarios, explicit simulated source | ADR-003; TestSupport | AC-MOCK-01 | Contract tests, source flag and UI evidence | Planned |
+| EL-MOCK-001 | MockDevice: deterministic scenarios, explicit simulated source | ADR-003, ADR-011; Infrastructure/Mock | AC-MOCK-01, P01-MOCK-01–08 | Contract tests, source flag and UI evidence | Partial: mock source/tests Implemented / Unverified; persistence Planned |
 
 ## Acceptance scenarios
 
@@ -47,7 +47,7 @@ Acceptance IDs are planned test cases, not existing test code.
 | P00-REPO | Read remote before changes; reuse repository; preserve `master` default | Passed: existing repo reused; owner initialized zero-file ec3cd14; master remains default |
 | P00-DOCS | Root files, four docs directories, architecture, engineering rules, traceability | 18 files submitted in PR #1; results recorded in [Phase 00 report](../release/phase-00.md) |
 | P00-CI | Document XcodeGen/Codemagic without starting paid build | Planning document only; no root CI config/workflow |
-| P00-PR | Submit feature branch PR targeting `master` | Passed: [PR #1](https://github.com/3pwei/eyelink-ios/pull/1), feature branch → master; open, not merged |
+| P00-PR | Submit feature branch PR targeting `master` | Passed: [PR #1](https://github.com/3pwei/eyelink-ios/pull/1), feature branch → master; merged by owner before Phase 01 |
 
 ## Status and evidence rules
 
@@ -59,3 +59,28 @@ toolchain, device/runtime, commands, expected/actual results, and artifacts. A l
 
 Unknowns: actual job description, iPhone model/OS, hardware/GATT specification, backend schema/auth/idempotency,
 photo retention, account/signing/distribution and budget. Resolve each before its dependent implementation.
+
+## Phase 01 implementation and acceptance map
+
+All rows below are **Implemented / Unverified**, not Verified. XCTest source existence is not a test pass.
+Case names, reproduction steps and environment are in [Phase 01 testing](../testing/phase-01.md).
+Original EL-BLE/CAM/API/SYNC/DATA requirements remain Planned; no hardware or persistence evidence is inferred.
+
+| Case | Requirement / behavior | Source / evidence needed |
+| --- | --- | --- |
+| P01-UI-01 | EL-UI-001: three native screens, loading/empty/error, navigation, Mock Mode / Simulated | Features views, DeviceSessionModelTests; simulator matrix still required |
+| P01-MOCK-01 | EL-MOCK-001: normal state transitions and synthetic result/time/source | MockDeviceTests: normal transitions + same-script replay |
+| P01-MOCK-02 | EL-MOCK-001: illegal transitions | Idle/failed start tests |
+| P01-MOCK-03 | EL-MOCK-001: duplicate connect | Connecting rejection, ready idempotency |
+| P01-MOCK-04 | EL-MOCK-001: duplicate measurement | Overlapping start/connect rejection |
+| P01-MOCK-05 | EL-MOCK-001: user/caller cancellation | Cancel cleanup + caller cancellation + repeated teardown |
+| P01-MOCK-06 | EL-MOCK-001: connection failure | Failure and explicit retry |
+| P01-MOCK-07 | EL-MOCK-001: measurement timeout | No result, failed state, reconnect |
+| P01-MOCK-08 | EL-MOCK-001: disconnect recovery / stale work | Scripted/manual disconnect, successful recovery, late connection/measurement tests |
+| P01-CONTRACT-01 | ADR-011: replaceable transport and bounded snapshot semantics | Alternate transport model test + slow-consumer snapshot test |
+| P01-LC-01 | EL-LC-001 subset: foreground mock interruption | Inactive scene model test; simulator inactive/background/resume still required |
+| P01-BUILD-01 | ADR-006/012/013: app/test targets, resources and settings | project.yml static checks; macOS generation/Debug test/Release build still required |
+
+AC-MOCK-01's persisted-source criterion and AC-LC-02 are deferred because this phase forbids persistence.
+AC-UI-02 still needs Dynamic Type/VoiceOver validation. Full Phase 00 discovery/radio/packet scenarios remain
+future BLE adapter work; Phase 01 tests only the explicitly scoped mock session.

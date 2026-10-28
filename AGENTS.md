@@ -3,7 +3,7 @@
 ## Scope and truthfulness
 
 - Read this file, README, relevant architecture decisions and requirement rows before editing.
-- Phase 00 is documentation and repository setup only. No iOS feature is complete.
+- Phase 00 was documentation/setup only. Phase 01 source is Implemented / Unverified; do not infer iOS verification from its presence.
 - Distinguish `Planned`, `Implemented / Unverified`, `Verified`, and `Blocked`.
 - A passing text check is not an iOS build. A build is not a runtime test. Mock evidence is not BLE hardware evidence.
 - Every verification claim must name the commit, environment, command or steps, result, and evidence location.

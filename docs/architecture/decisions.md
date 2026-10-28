@@ -27,3 +27,22 @@ Codemagic plan/quota, target iPhone model/OS, required branch checks.
 
 Append a new ADR or supersede an existing row with rationale, impacted requirement IDs and evidence.
 Preserve prior decisions for review. Accepted architecture still requires implementation and verification.
+
+## Phase 01 implementation decisions (2026-10-29)
+
+These append to ADR-001–010; they do not claim toolchain or hardware verification.
+
+| ID | Decision | Reason / scope | Verification |
+| --- | --- | --- | --- |
+| ADR-011 | Implement Domain-owned MainActor DeviceTransport with connect/disconnect/startMeasurement/cancelMeasurement, snapshot properties and bounded current-state feed | One foreground device, no discovery/GATT yet. Explicit measurement methods replace the proposed generic send for this phase. Foundation/Swift only; future adapters marshal callbacks to this boundary, blocking work stays off MainActor. | Implemented / Unverified; contract and presentation tests authored |
+| ADR-012 | Keep one app + XCTest target, iOS 17.0, XcodeGen source; set Swift 5 language mode and complete strict-concurrency checking | `SWIFT_VERSION: 5.0` is a language mode, not a Swift 5.0 compiler pin. Source uses newer concurrency APIs. Exact compiler/Xcode/XcodeGen/runtime tuple must be selected and recorded on first authorized macOS run. | Unverified; no XcodeGen generation or Apple SDK compilation |
+| ADR-013 | Use `io.github.3pwei.eyelink` / `.tests` as unsigned development bundle IDs | Repository-scoped local identifiers replace `com.example`; no App Store registration, ownership of an Apple identifier or signing claim. Production ID remains a release decision. | Static configuration only |
+
+ADR-011 narrows, rather than implements, the Phase 00 scan/send/events proposal. `snapshots()` is explicitly
+not an event log: bufferingNewest(1) coalesces progress and each snapshot retains result/error until the next
+explicit operation. No measurement completion is delivered solely via the feed: startMeasurement also returns
+it. Callers must handle that return if they need every result. Real BLE must revisit the lossless event contract.
+
+Mock fixture: `testValue = 42`, arbitrary test points (no physical unit, no clinical meaning), measuredAt from
+an injected clock, source raw value `mock`, UI source label `Simulated`. No medical field names or GATT units
+are invented. Clock and named scenario fully determine output; no random generator is needed.

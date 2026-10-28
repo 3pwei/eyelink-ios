@@ -1,8 +1,8 @@
 # XcodeGen and Codemagic build plan
 
-Status: **Planning only, not executed or validated on macOS.**
+Status: **Not executed or validated on macOS.** Phase 01 now provides [project.yml](../../project.yml); historical Phase 00 examples below are retained as planning context. Current commands and configuration are in [Phase 01 testing](../testing/phase-01.md).
 No root `project.yml`, `codemagic.yaml`, webhook, GitHub Actions workflow or signed artifact is created in Phase 00.
-Do not run these examples as-is. The repository currently contains no App or test source directories.
+Do not run these examples as-is. The Phase 00 repository contained no App or test source directories; Phase 01 adds them.
 
 ## Windows + iPhone workflow
 
@@ -113,7 +113,7 @@ xcodebuild -project EyeLink.xcodeproj -scheme EyeLink \
 Pin a runtime/device selection policy and use fresh output paths per job. A missing simulator, absent scheme,
 failed generation, compiler error or failing test must fail the job. Do not hide failures with `|| true`.
 Before enabling the job, validate Codemagic YAML, install/check pinned XcodeGen, and ensure artifact collection
-also preserves failed-run logs. The full workflow YAML is a Phase 01 deliverable, not a Phase 00 success claim.
+also preserves failed-run logs. The current Phase 01 instruction explicitly defers workflow YAML and cloud builds. No active workflow is part of this delivery.
 
 ## Signing and iPhone distribution (later gate)
 
