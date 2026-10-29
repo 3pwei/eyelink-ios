@@ -29,6 +29,7 @@ MATRIX = [
     ("se3-accessibility", "iPhone SE (3rd generation)", "com.apple.CoreSimulator.SimDeviceType.iPhone-SE-3rd-generation",
      "com.apple.CoreSimulator.SimRuntime.iOS-17-5", "accessibility-extra-extra-extra-large"),
 ]
+MIN_UI_SECONDS = 180  # Admission threshold only; never a guarantee a UI suite will finish.
 
 
 class Validation:
@@ -42,6 +43,8 @@ class Validation:
                        [f"ui-{row[0]}" for row in MATRIX]},
         }
         self.created = []
+        self.booted = set()
+        self.primary_udid = None
         self.bundles = []
         self.failed = False
         # Leave time to export and zip evidence before the provider's 20-minute limit.
@@ -131,6 +134,7 @@ class Validation:
         self.manifest["devices"].append({"matrix": key, "model": model, "runtime": runtime,
                                          "udid": udid, "content_size": size, "orientation": "portrait"})
         self.run(f"boot-{key}", ["xcrun", "simctl", "boot", udid])
+        self.booted.add(udid)
         self.run(f"bootstatus-{key}", ["xcrun", "simctl", "bootstatus", udid, "-b"], timeout=120)
         self.run(f"appearance-{key}", ["xcrun", "simctl", "ui", udid, "appearance", "light"])
         self.run(f"content-size-{key}", ["xcrun", "simctl", "ui", udid, "content_size", size])
@@ -150,16 +154,34 @@ class Validation:
                          "-test-timeouts-enabled", "YES", "-default-test-execution-time-allowance", "180",
                          "-maximum-test-execution-time-allowance", "180", "test"], timeout=420)
 
+    def unit_tests(self):
+        self.primary_udid = self.simulator(MATRIX[0])
+        self.tests("unit-tests", "EyeLinkTests", self.primary_udid)
+
+    def shutdown(self, key, udid):
+        self.run(f"shutdown-{key}", ["xcrun", "simctl", "shutdown", udid])
+        self.booted.discard(udid)
+
     def matrix(self, row):
         key = row[0]
-        udid = self.simulator(row)
-        # Unit failures must not discard independent UI evidence.
-        if key == "iphone16-default":
-            self.stage("unit-tests", lambda: self.tests("unit-tests", "EyeLinkTests", udid))
+        udid = self.primary_udid if row == MATRIX[0] else self.simulator(row)
         try:
             self.tests(f"ui-{key}", "EyeLinkUITests", udid)
         finally:
-            self.run(f"shutdown-{key}", ["xcrun", "simctl", "shutdown", udid])
+            self.shutdown(key, udid)
+
+    def optional_ui(self):
+        for row in MATRIX:
+            key = f"ui-{row[0]}"
+            remaining = self.deadline - time.monotonic()
+            if remaining < MIN_UI_SECONDS:
+                self.manifest["stages"][key] = (
+                    f"NOT RUN: {max(0, remaining):.0f}s work budget remains; "
+                    f"requires at least {MIN_UI_SECONDS}s before starting UI"
+                )
+                print(self.manifest["stages"][key], flush=True)
+            else:
+                self.stage(key, lambda row=row: self.matrix(row))
 
     def export(self, key, bundle, target):
         if not bundle.exists():
@@ -187,14 +209,16 @@ class Validation:
         try:
             if self.stage("preflight", self.preflight) and self.stage("generation", self.generate):
                 if self.stage("debug-build", lambda: self.xcode("debug-build", ["-destination", "generic/platform=iOS Simulator", "build"])):
-                    for row in MATRIX:
-                        self.stage(f"ui-{row[0]}", lambda row=row: self.matrix(row))
+                    if self.stage("unit-tests", self.unit_tests):
+                        self.optional_ui()
         finally:
             self.deadline = time.monotonic() + 180
             for key, bundle, target in self.bundles:
                 self.stage(f"export-{key}", lambda k=key, b=bundle, t=target: self.export(k, b, t))
             for index, udid in enumerate(self.created):
                 # Delete only disposable devices created by this invocation.
+                if udid in self.booted:
+                    self.stage(f"shutdown-{index}", lambda u=udid, i=index: self.shutdown(f"cleanup-{i}", u))
                 self.stage(f"cleanup-{index}", lambda u=udid, i=index: self.run(f"delete-{i}", ["xcrun", "simctl", "delete", u]))
             if any(value != "PASS" for value in self.manifest["stages"].values()):
                 self.failed = True

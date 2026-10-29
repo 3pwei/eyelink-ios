@@ -1,6 +1,8 @@
 # Phase 02A preparation evidence — not an iOS build
 
 Date: 2026-10-29 (Asia/Taipei).
+Historical preparation snapshot. Current conditional authorization/account blockers are tracked in the
+[authorization record](../phase-02a-authorization.md); this original record is not upgraded to runtime evidence.
 Source commit: [58ec3f41463fdacebfa6f1e198c6da1390d842ac](https://github.com/3pwei/eyelink-ios/commit/58ec3f41463fdacebfa6f1e198c6da1390d842ac).
 Source tree: `91cd2c9d7583c27522751384d6c3e0ca7398e2b0`.
 Base master: `42d44bb64e5fdf7c6ff6a0615338ff7c07679762` (PR #2 merged).

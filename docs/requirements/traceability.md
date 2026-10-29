@@ -88,7 +88,8 @@ future BLE adapter work; Phase 01 tests only the explicitly scoped mock session.
 ## Phase 02A build and UI validation map
 
 All harness/configuration rows are **Implemented / Unverified**. Runtime acceptance is **Blocked**:
-the editor is Linux and no cloud cost authorization has been given. No original requirement is promoted to Verified.
+the editor is Linux and account-side billing/stop prerequisites remain unverified despite conditional one-run authorization.
+No original requirement is promoted to Verified. See the [authorization record](../testing/phase-02a-authorization.md).
 See [Phase 02A runbook](../testing/phase-02a.md) for the exact test/environment/artifact matrix.
 
 | Case | Requirement / acceptance | Implementation / evidence still required |

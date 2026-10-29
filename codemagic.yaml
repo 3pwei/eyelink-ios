@@ -1,4 +1,6 @@
-# Prepared only. Do not start until the owner approves a run and cost cap.
+# One run conditionally authorized: M2 only, 20 min, USD 2/run, USD 5/Phase 02A.
+# Account type/rate/free quota/Billing and effective stopping controls MUST be verified first.
+# No second build or automatic retry. See docs/testing/phase-02a-authorization.md.
 # No triggering, schedules, integrations, signing, or publishing configuration.
 workflows:
   phase-02a-manual:

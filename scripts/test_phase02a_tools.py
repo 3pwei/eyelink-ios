@@ -79,6 +79,29 @@ class HarnessTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             png_dimensions(attachment)
 
+    def test_insufficient_ui_time_never_launches_or_reports_pass(self):
+        validation = runner.Validation()
+        validation.deadline = 100
+        with patch.object(runner.time, "monotonic", return_value=50), \
+             patch.object(validation, "matrix") as matrix:
+            validation.optional_ui()
+        matrix.assert_not_called()
+        for row in runner.MATRIX:
+            self.assertTrue(validation.manifest["stages"][f"ui-{row[0]}"].startswith("NOT RUN:"))
+
+    def test_core_steps_precede_ui_and_no_second_unit_attempt(self):
+        validation = runner.Validation()
+        order = []
+        with patch.object(validation, "preflight", side_effect=lambda: order.append("preflight")), \
+             patch.object(validation, "generate", side_effect=lambda: order.append("generation")), \
+             patch.object(validation, "xcode", side_effect=lambda *args: order.append("build")), \
+             patch.object(validation, "unit_tests", side_effect=lambda: order.append("unit")) as unit, \
+             patch.object(validation, "optional_ui", side_effect=lambda: order.append("ui")):
+            # Stubbed UI does not establish any passes, so the overall run stays incomplete.
+            self.assertEqual(validation.execute(), 1)
+        self.assertEqual(order, ["preflight", "generation", "build", "unit", "ui"])
+        unit.assert_called_once()
+
 
 if __name__ == "__main__":
     unittest.main()

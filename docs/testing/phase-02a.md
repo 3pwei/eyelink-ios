@@ -3,6 +3,7 @@
 狀態：**設定／測試程式 Implemented / Unverified；macOS 執行 Blocked**。
 日期：2026-10-29（Asia/Taipei）。本文件不是 Build Passed 或 Simulator 驗證結果。
 已執行的 Linux 檢查見 [準備階段證據](evidence/phase-02a-static.md)。
+目前已收到一次建置的條件式授權，詳見 [費用與帳戶驗證紀錄](phase-02a-authorization.md)；帳戶查證完成前仍禁止啟動。
 
 ## 起點與範圍
 
@@ -19,18 +20,19 @@
 本次未連接 Codemagic、未新增 webhook／schedule、未啟動 runner；帳戶既有設定／方案／額度尚未檢查。
 YAML 不包含觸發事件，不代表其他帳戶工作流也已停用。不得因有免費方案就推定本次免費。
 
-執行前由 owner 明確核准以下項目，並在 PR 留下紀錄：
+Owner 已核准 M2、一次最多 20 分鐘、單次 US$2.00、Phase 02A 累計 US$5.00；不得重試或第二次建置。
+執行前仍須查證以下項目並記錄，不再重複索取相同費用授權：
 
 | 項目 | 待核准內容 |
 | --- | --- |
 | 來源 | 此 feature branch 的完整 commit SHA；不需要先合併 master |
-| 範圍 | 一次 `phase-02a-manual`，Debug build、24 unit tests、3 組 UI matrix、artifact 匯出 |
+| 範圍 | 一次 `phase-02a-manual`，優先 Debug build、24 unit tests，再視剩餘時間執行 UI matrix、artifact 匯出 |
 | Runner | `mac_mini_m2`、Xcode 16.4，單次最多 20 分鐘，並行 1、不自動重試 |
-| 費用 | 帳戶當下費率、可用額度、幣別與明確的單次金額上限；20 分鐘 timeout 不是金額上限 |
+| 費用 | 查證 Individual/Team、適用費率、剩餘免費分鐘、Billing 狀態與實際停止條件；單次 ≤ US$2、累計 ≤ US$5 |
 | 外部設定 | 檢查 automatic build／schedule／webhook；不要開啟 push／PR 自動建置 |
 
-沒有上述授權時停留在設定準備。腳本不能在 runner 啟動後替使用者防止計費。
-授權後在 Codemagic 選擇 repository → Start new build → 此分支 → `phase-02a-manual`，核對 SHA 後啟動一次。
+任何帳戶費率、免費額度或費用控制方式無法查證時停留在設定準備。腳本不能在 runner 啟動後替使用者防止計費。
+全部前置檢查完成後，在 Codemagic 選擇 repository → Start new build → 此分支 → `phase-02a-manual`，核對 SHA 後啟動一次。
 沒有互動式 Simulator 的承諾；此流程使用 `simctl` 與 XCUITest 在 macOS 背景執行。
 若無法啟動 runtime／Simulator，該組測試標示 FAILED / BLOCKED 並保存診斷，不切換成 mockup。
 
@@ -71,7 +73,8 @@ python3 scripts/run_phase02a.py
 內部工作預算 15 分鐘，另留 3 分鐘匯出與清理；超時為失敗，仍嘗試封裝已存在的證據。
 
 輸出固定在忽略追蹤的 `artifacts/phase-02a/`；目錄已存在時拒絕覆寫，請先保存舊證據並使用新 checkout。
-任何命令失敗保留 log；單元測試失敗仍嘗試取得獨立 UI 證據。缺少裝置或 UI 失敗不會被當作 pass。
+任何命令失敗保留 log；單元測試命令失敗不再開始 UI。每組 UI 啟動前需有至少 180 秒工作時間，否則明確 NOT RUN。
+缺少裝置、時間不足或 UI 失敗都不會被當作 pass。
 `xcresulttool get test-results summary` 必須有 24 unit 或 4 UI passes，且 failures/skips 都為 0。
 每組 UI 匯出至少 35 個 PNG 附件，否則 artifact gate 失敗。這些數量是預期，不是已執行的結果。
 失敗 bundle 仍保存；若 summary／attachment 匯出本身失敗，原始 `.xcresult` 與錯誤 log 保留供診斷。

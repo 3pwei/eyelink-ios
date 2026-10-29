@@ -8,7 +8,8 @@ Native iOS engineering portfolio：裝置連線、模擬量測、離線紀錄與
 模擬量測僅供工程展示，不代表實際儀器讀值或醫療判讀。
 
 Phase 02A 已準備手動 Codemagic 建置、UI 測試與截圖匯出流程，**尚未實跑**。
-目前 Linux 環境無 Xcode／Simulator，雲端費用亦未授權。見 [Phase 02A 操作與人工審查](docs/testing/phase-02a.md)。
+目前 Linux 環境無 Xcode／Simulator；已取得一次 M2／20 分鐘／US$2 的條件式授權，仍待查證帳戶費率、額度與停止條件。
+見 [Phase 02A 操作與人工審查](docs/testing/phase-02a.md)。
 
 ## 開發環境與範圍
 

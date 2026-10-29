@@ -14,12 +14,14 @@ The full [runbook and review matrix](../testing/phase-02a.md) separates real Moc
 state rendering fixtures. See [traceability](../requirements/traceability.md) for P02A cases.
 No source/static check qualifies as an iOS build. No screenshot, xcresult, build ID or paid run is claimed.
 Actual Linux checks and source SHA are in the [preparation evidence record](../testing/evidence/phase-02a-static.md).
+The owner has now conditionally authorized one M2 run: 20 minutes, US$2/run and US$5 aggregate.
+The [account/budget checklist](../testing/phase-02a-authorization.md) is still pending; no runner may start yet.
 
 | Requested acceptance | Current status |
 | --- | --- |
 | True macOS Debug build | Blocked: this editing host is Linux; no Xcode/Apple SDK |
 | XCTest execution | Not run; 24 existing unit + 4 new UI methods are source inventory only |
-| Simulator PNG evidence | Blocked: no Simulator here; cloud execution budget not authorized |
+| Simulator PNG evidence | Blocked: no Simulator here; conditional budget authorized but account prerequisites unverified |
 | Xcode/runtime/device record | Planned Xcode 16.4; actual manifest requires runner execution |
 | Artifacts and human review | Export/ZIP/gallery implementation prepared; no real build artifacts yet |
 | PR | Submit prepared work for source review; do not merge automatically |
@@ -28,8 +30,9 @@ No signing, account integration, webhook, push/PR trigger, schedule, publication
 download or paid runner was started. Account plan/quota/rates and existing automatic jobs remain unknown.
 The root YAML omits triggering; it is configuration readiness, not cloud execution authorization.
 
-Next entry conditions: owner reviews this PR; confirms one run's exact SHA, account/rate/quota and currency
-cost cap; inspects account auto-build settings; manually runs the workflow. Retain the build URL and ZIP,
+Next entry conditions: inspect account type/rate/free quota/Billing and effective stopping conditions;
+verify estimated single/aggregate charges within the approved caps and the exact source SHA;
+inspect account auto-build settings; manually run once. Retain the build URL and ZIP,
 fix any generation/compiler/runtime/export failure through this branch/PR or a follow-up PR, and record
 human screenshot review before upgrading requirements to Verified. No automatic retries are authorized.
 
