@@ -1,9 +1,9 @@
 # Phase 02A — iOS Build & UI Visual Verification
 
-狀態：**設定／測試程式 Implemented / Unverified；macOS 執行 Blocked**。
-日期：2026-10-29（Asia/Taipei）。本文件不是 Build Passed 或 Simulator 驗證結果。
+狀態：**首次 macOS 建置已執行但 Debug Build 失敗；修正 Implemented / Unverified；XCTest／UI Blocked**。
+日期：2026-10-29（Asia/Taipei）。[首次建置結果](evidence/phase-02a-run-01.md)記錄真實環境、失敗日誌與 Artifacts。
 已執行的 Linux 檢查見 [準備階段證據](evidence/phase-02a-static.md)。
-目前已收到一次建置的條件式授權，詳見 [費用與帳戶驗證紀錄](phase-02a-authorization.md)；帳戶查證完成前仍禁止啟動。
+帳戶查證完成後已使用唯一一次建置授權，詳見 [費用與帳戶驗證紀錄](phase-02a-authorization.md)；不得重試或再啟動。
 
 ## 起點與範圍
 
@@ -17,8 +17,9 @@
 ## 費用與啟動門檻
 
 [codemagic.yaml](../../codemagic.yaml) 是準備好的設定，沒有 `triggering`、`publishing` 或 signing integrations。
-本次未連接 Codemagic、未新增 webhook／schedule、未啟動 runner；帳戶既有設定／方案／額度尚未檢查。
-YAML 不包含觸發事件，不代表其他帳戶工作流也已停用。不得因有免費方案就推定本次免費。
+已用公開 Git URL 新增 Codemagic App；未新增 webhook／schedule，唯一一次 M2 runner 已執行。
+執行前個人帳戶免費額度 0/500、Billing 未啟用；執行後額度 1/500，無交易紀錄或獨立美元費用欄位。
+以下是每次執行的操作門檻；並非第二次建置授權。
 
 Owner 已核准 M2、一次最多 20 分鐘、單次 US$2.00、Phase 02A 累計 US$5.00；不得重試或第二次建置。
 執行前仍須查證以下項目並記錄，不再重複索取相同費用授權：
@@ -36,7 +37,10 @@ Owner 已核准 M2、一次最多 20 分鐘、單次 US$2.00、Phase 02A 累計 
 沒有互動式 Simulator 的承諾；此流程使用 `simctl` 與 XCUITest 在 macOS 背景執行。
 若無法啟動 runtime／Simulator，該組測試標示 FAILED / BLOCKED 並保存診斷，不切換成 mockup。
 
-## 預定環境（尚未實測）
+## 環境與矩陣
+
+首次執行已確認 macOS 15.5 (24F74)、Xcode 16.4 (16F6)、Swift 6.1.2、XcodeGen 2.44.1。
+Simulator 未啟動，以下裝置／runtime／字級仍為預定值；修正後的專案尚未重新生成或編譯。
 
 | 元件 | 選定值 / 實際值取得方式 |
 | --- | --- |
@@ -48,7 +52,7 @@ Owner 已核准 M2、一次最多 20 分鐘、單次 US$2.00、Phase 02A 累計 
 | iPhone SE (3rd generation) | iOS 17.5，portrait／light／預設 large 字級 |
 | iPhone SE (3rd generation) | iOS 17.5，portrait／light／accessibility-extra-extra-extra-large 字級 |
 
-選定 image 的實際可用性、Swift compiler、XcodeGen 相容性仍未驗證。
+選定 image 與 XcodeGen 生成已取得一次成功證據；Debug Build 因 AppIcon 缺漏失敗，後續測試未執行。
 不宣稱 iOS 17.0 runtime 已測；iOS 17.0 deployment target 與 17.5 測試 runtime 是不同事項。
 腳本會驗證 runtime 存在，建立專用 Simulator，紀錄實際 UUID，再於結束時刪除本次建立的裝置。
 不使用預先捏造的 UUID，不下載額外 runtime，不改動使用者既有 Simulator。
@@ -106,7 +110,9 @@ Windows／macOS 解壓縮，直接用瀏覽器開啟 `phase-02a/index.html`，�
 點擊縮圖可看原始 PNG。gallery 顯示附件名稱、檔案路徑與像素尺寸；來源對應保存在 attachment manifest。
 JSON 的 `manifest.json` 包含 SHA、工具版本、裝置／字級、命令、stage 結果與 PNG hashes。
 每組有 raw `.xcresult`、summary JSON、build／test／export logs；macOS 可用 Xcode 開啟 `.xcresult` 深查。
-下載後保存 ZIP，避免依賴未知的帳戶 artifact 保留期限；本次沒有可用的 build URL 或 ZIP。
+下載後保存 ZIP，避免依賴帳戶 artifact 保留期限。
+[首次 Build](https://codemagic.io/app/6ae2c9db01af2bc8f930cd97/build/6ae2caa5206ce93970c71bfe)
+已有失敗診斷 ZIP；HTML 明確顯示沒有 PNG，不能用來做 UI 人工驗收。
 
 人工審查表（每一裝置／字級與三個畫面都需填寫）：
 

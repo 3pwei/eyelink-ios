@@ -7,8 +7,9 @@ Native iOS engineering portfolio：裝置連線、模擬量測、離線紀錄與
 尚未經 macOS／Xcode 編譯、XCTest 執行或 Simulator／iPhone 驗證；沒有可安裝 IPA。
 模擬量測僅供工程展示，不代表實際儀器讀值或醫療判讀。
 
-Phase 02A 已準備手動 Codemagic 建置、UI 測試與截圖匯出流程，**尚未實跑**。
-目前 Linux 環境無 Xcode／Simulator；已取得一次 M2／20 分鐘／US$2 的條件式授權，仍待查證帳戶費率、額度與停止條件。
+Phase 02A 已完成唯一一次手動 M2 建置：XcodeGen 成功，**Debug Build 因缺少 AppIcon 資產失敗**。
+耗時 1 分 13 秒；XCTest／Simulator／截圖未執行。Debug Simulator 設定修正已準備，尚未重跑驗證。
+見 [真實建置與費用證據](docs/testing/evidence/phase-02a-run-01.md)；第二次執行需要新的明確授權。
 見 [Phase 02A 操作與人工審查](docs/testing/phase-02a.md)。
 
 ## 開發環境與範圍
@@ -51,7 +52,8 @@ git diff --check
 ```
 
 這些檢查只驗證文件與 repository hygiene，不能證明 Swift 編譯、App 可執行或 BLE 正常。
-已提供 `project.yml`（尚未生成驗證）與手動 `codemagic.yaml`；沒有 CI trigger，沒有啟動建置。
+已提供 `project.yml` 與手動 `codemagic.yaml`；來源 `d1548af` 已成功生成專案，但 Debug Build 失敗。
+後續圖示設定修正尚未經 macOS 驗證；沒有自動 CI trigger，也未啟動第二次建置。
 靜態 project 檢查：`python scripts/check_phase01.py`，需要 PyYAML 6.0.3（僅檢查工具，本環境已安裝）。
 macOS 生成與測試步驟見 [Phase 01 測試](docs/testing/phase-01.md)。
 Phase 02A 工具的 Linux regression checks：`python -m unittest discover -s scripts -p 'test_phase02a_tools.py' -v`。

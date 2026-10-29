@@ -1,6 +1,6 @@
 # Phase 02A delivery status
 
-Date: 2026-10-29 (Asia/Taipei). **Prepared / Unverified; macOS validation Blocked.**
+Date: 2026-10-29 (Asia/Taipei). **First macOS build failed; Debug fix Implemented / Unverified; UI acceptance Blocked.**
 Base master: `42d44bb64e5fdf7c6ff6a0615338ff7c07679762`; [Phase 01 PR #2](https://github.com/3pwei/eyelink-ios/pull/2) merged.
 Branch: `feature/phase-02a-build-ui-validation`; PR targets master and must be reviewed/merged by owner.
 
@@ -12,29 +12,35 @@ Only the composition root and a Dashboard accessibility identifier change existi
 
 The full [runbook and review matrix](../testing/phase-02a.md) separates real MockDevice flows from frozen
 state rendering fixtures. See [traceability](../requirements/traceability.md) for P02A cases.
-No source/static check qualifies as an iOS build. No screenshot, xcresult, build ID or paid run is claimed.
+No source/static check qualifies as an iOS build. One real M2 build is now recorded, with no screenshot or xcresult.
 Actual Linux checks and source SHA are in the [preparation evidence record](../testing/evidence/phase-02a-static.md).
-The owner has now conditionally authorized one M2 run: 20 minutes, US$2/run and US$5 aggregate.
-The [account/budget checklist](../testing/phase-02a-authorization.md) is still pending; no runner may start yet.
+The [account/budget checklist](../testing/phase-02a-authorization.md) was completed before the single
+M2 run (20-minute limit, US$2/run, US$5 aggregate). The one-run authorization is consumed.
+[Build #1](https://codemagic.io/app/6ae2c9db01af2bc8f930cd97/build/6ae2caa5206ce93970c71bfe)
+ran source `d1548af2527cb604a44dcec8e23945375077f4d7` for 1m 13s and failed on missing AppIcon.
+The follow-up `project.yml` override clears that preset only for Debug Simulator; it has not been rebuilt.
+Detailed environment, command/diagnostic, timing, usage and ZIP hash are in the
+[first-run evidence](../testing/evidence/phase-02a-run-01.md).
 
 | Requested acceptance | Current status |
 | --- | --- |
-| True macOS Debug build | Blocked: this editing host is Linux; no Xcode/Apple SDK |
+| True macOS Debug build | Attempted on M2: XcodeGen PASS, Debug Build FAILED exit 65; follow-up icon fix unverified |
 | XCTest execution | Not run; 24 existing unit + 4 new UI methods are source inventory only |
-| Simulator PNG evidence | Blocked: no Simulator here; conditional budget authorized but account prerequisites unverified |
-| Xcode/runtime/device record | Planned Xcode 16.4; actual manifest requires runner execution |
-| Artifacts and human review | Export/ZIP/gallery implementation prepared; no real build artifacts yet |
-| PR | Submit prepared work for source review; do not merge automatically |
+| Simulator PNG evidence | NOT RUN: compilation failed before tests; no Simulator was booted |
+| Xcode/runtime/device record | Actual macOS 15.5 (24F74), Xcode 16.4 (16F6), Swift 6.1.2, XcodeGen 2.44.1; device/runtime untested |
+| Artifacts and human review | Actual failure ZIP/logs/manifest/HTML downloadable; no PNG, so UI visual review blocked |
+| PR | Existing draft PR #3 contains evidence and unverified fix; no merge |
 
-No signing, account integration, webhook, push/PR trigger, schedule, publication, Apple enrollment, runtime
-download or paid runner was started. Account plan/quota/rates and existing automatic jobs remain unknown.
-The root YAML omits triggering; it is configuration readiness, not cloud execution authorization.
+Email login and public-URL App setup succeeded. Personal account free usage changed from 0/500 to 1/500;
+paid billing remains disabled, with no transactions and no per-build dollar amount displayed.
+Estimated cost is US$0; no provider-displayed US$0 invoice is claimed.
+No signing, webhook, push/PR trigger, schedule, publication, Apple enrollment, runtime download,
+paid subscription or second build was submitted.
 
-Next entry conditions: inspect account type/rate/free quota/Billing and effective stopping conditions;
-verify estimated single/aggregate charges within the approved caps and the exact source SHA;
-inspect account auto-build settings; manually run once. Retain the build URL and ZIP,
-fix any generation/compiler/runtime/export failure through this branch/PR or a follow-up PR, and record
-human screenshot review before upgrading requirements to Verified. No automatic retries are authorized.
+Next entry conditions: a new explicit authorization for any second run, then recheck account/cost controls
+and the exact fix commit. Tests and human screenshot review still need actual successful execution before
+promoting requirements to Verified. No automatic retries are authorized.
 
 Release build, physical iPhone, VoiceOver, BLE and other Phase 02 feature gates remain separate.
-Rollback: revert this PR through review; no persistent data migration or external service change exists.
+Rollback: revert this PR through review. No persistent data migration; the manual Codemagic App and
+Build #1 evidence now exist as external configuration/history.

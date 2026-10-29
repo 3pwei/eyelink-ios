@@ -87,18 +87,19 @@ future BLE adapter work; Phase 01 tests only the explicitly scoped mock session.
 
 ## Phase 02A build and UI validation map
 
-All harness/configuration rows are **Implemented / Unverified**. Runtime acceptance is **Blocked**:
-the editor is Linux and account-side billing/stop prerequisites remain unverified despite conditional one-run authorization.
+Runtime acceptance remains **Blocked** after [the first real M2 run](../testing/evidence/phase-02a-run-01.md):
+XcodeGen passed but Debug Build failed on the missing AppIcon asset. XCTest, Simulator and PNG capture did not run.
+The Debug Simulator icon override is **Implemented / Unverified**; no second build is authorized.
 No original requirement is promoted to Verified. See the [authorization record](../testing/phase-02a-authorization.md).
 See [Phase 02A runbook](../testing/phase-02a.md) for the exact test/environment/artifact matrix.
 
 | Case | Requirement / acceptance | Implementation / evidence still required |
 | --- | --- | --- |
-| P02A-BUILD-01 | P01-BUILD-01 subset: XcodeGen + unsigned Debug build on real macOS | Manual Codemagic + runner; need SHA-linked generation/compiler logs and environment manifest |
+| P02A-BUILD-01 | P01-BUILD-01 subset: XcodeGen + unsigned Debug build on real macOS | Source d1548af: generation PASS, build FAILED exit 65; real logs/manifest in Build #1. Fix unverified |
 | P02A-UNIT-01 | P01-MOCK/CONTRACT/LC tests execute | Existing 24 unit tests preserved; need xcresult and 24 passes / 0 failures / 0 skips |
 | P02A-UI-01 | P01-UI-01 / AC-UI-01: Dashboard → Examination → Result, empty/error and mock labels | Four XCUITest methods; need UI xcresult on three matrix entries |
 | P02A-UI-02 | AC-UI-01 rendering subset: loading/error/empty for all three views | Debug frozen snapshots rendered by real SwiftUI; must identify fixture attachments separately from flow |
 | P02A-VISUAL-01 | AC-UI-02 subset: compact/large iPhone, text truncation, Safe Area, maximum Dynamic Type | Real Simulator PNGs, pixel dimensions, manual reviewer/date/finding table; VoiceOver remains separate |
-| P02A-EVIDENCE-01 | Downloadable evidence and human review access | Raw xcresult + summary JSON/logs/PNG + manifest + offline HTML ZIP; need actual build/artifact URL |
+| P02A-EVIDENCE-01 | Downloadable evidence and human review access | Failure ZIP/logs/manifest/HTML downloaded from Build #1; no xcresult or PNG, so full evidence acceptance remains incomplete |
 
 No Release build, physical iPhone, VoiceOver or real BLE claim follows from this scoped workflow.

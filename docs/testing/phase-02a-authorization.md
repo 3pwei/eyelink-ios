@@ -1,8 +1,9 @@
 # Phase 02A — conditional one-run authorization
 
-Date: 2026-10-29 (Asia/Taipei). **Authorization received; account verification pending. No build started.**
+Date: 2026-10-29 (Asia/Taipei). **Account checks completed; the single authorized build has been submitted.**
 This records the owner's current instructions and supersedes earlier statements that no budget was supplied.
-It does not establish that the account is eligible, free, billable at a particular rate, or safe to start.
+The contemporaneous [first-run record](evidence/phase-02a-run-01.md) contains the preflight observations
+and accepted build ID. No second submission is authorized.
 
 ## Authorized limits
 
@@ -25,11 +26,11 @@ If any cannot be verified, stay at configuration preparation. Do not start a run
 
 | Check | Current result / evidence needed |
 | --- | --- |
-| Individual or Team | Pending: Codemagic browser currently shows login page; selected account not established |
-| Applicable M2 rate and remaining free minutes | Pending: read selected account's Billing/usage and applicable plan; public list price is not account proof |
-| Paid Billing enabled/disabled | Pending: inspect current state; do not enable Billing, add a card, change plan or buy concurrency |
-| Worst-case single/aggregate charge | Pending: include applicable rounding, tax/fees and already consumed Phase 02A budget; confirm ≤ US$2 and ≤ US$5 respectively |
-| Effective stopping conditions | YAML fixes M2/20 min and script bounds work/export time; provider enforcement/billable-time coverage and any monetary cap still need verification |
+| Individual or Team | Verified before launch: selected Personal Account (Individual) |
+| Applicable M2 rate and remaining free minutes | Billing UI: free macOS personal usage 0 / 500; 500 minutes remaining; this ≤20-minute M2 run uses free allowance (US$0) |
+| Paid Billing enabled/disabled | Not enabled: Enable subscription action, no previous transactions; no billing change submitted |
+| Worst-case single/aggregate charge | Free-only account, no paid subscription: estimated US$0 / US$0, below US$2 / US$5; final displayed charge must still be reported separately |
+| Effective stopping conditions | Provider loaded M2/20-minute YAML; work/export budgets 15+3 minutes. Paid billing stays disabled; no automatic transition to paid usage. No dollar-cap feature is claimed |
 
 Public reference only: the [official pricing page](https://docs.codemagic.io/billing/pricing/) retrieved on
 2026-10-29 lists M2 at US$0.095/minute. 20 × 0.095 = US$1.90 **before any applicable adjustments**.
@@ -38,9 +39,10 @@ The [timeout documentation](https://docs.codemagic.io/yaml-running-builds/timeou
 time limit. A duration limit is not evidence of a US$2 hard spending cap or the scope of every billable charge.
 Personal and Team usage/Billing are separate according to [Billing documentation](https://docs.codemagic.io/billing/billing/).
 
-No service-specific Codemagic plugin was found in the available plugin search. The cloud browser reached
-`https://codemagic.io/login`, so authentication is required for account verification. No build, account creation,
-Billing change, payment, machine upgrade, external automation setting or repository integration was submitted.
+No service-specific Codemagic plugin was found. Email authentication succeeded; the existing personal
+account was inspected. EyeLink was added by public Git URL, without GitHub OAuth or a webhook installation.
+No schedules or prior builds existed. One manual build was then accepted on M2; see the first-run record.
+No account creation, Billing change, payment, machine upgrade or automatic trigger was submitted.
 Do not put credentials, card details or private billing documents into this public repository.
 
 ## First-run execution and stop policy
@@ -74,5 +76,6 @@ The following are Linux-only checks of the prepared configuration/harness; no Ap
 - `python -m py_compile scripts/run_phase02a.py scripts/phase02a_report.py`; `bash -n scripts/install_xcodegen.sh`;
   `git diff --check`: syntax/whitespace checks.
 
-The PR description records the actual outcomes and source SHA after publication. These checks cannot resolve
-the five account-side prerequisites above. See the [runbook](phase-02a.md) for future artifact review.
+The PR description records actual outcomes and source SHA after publication. The five account-side
+prerequisites were resolved separately through provider UI and documentation, not by these Linux tests.
+See the [runbook](phase-02a.md) for artifact review.
