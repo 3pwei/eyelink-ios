@@ -46,6 +46,11 @@ targets:
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: "YES"
         INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+      configs:
+        Debug:
+          # Phase 01 has no AppIcon asset. Override XcodeGen's preset for
+          # unsigned Simulator validation; Release still requires a real icon.
+          "ASSETCATALOG_COMPILER_APPICON_NAME[sdk=iphonesimulator*]": ""
   EyeLinkTests:
     type: bundle.unit-test
     platform: iOS
@@ -56,12 +61,24 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: io.github.3pwei.eyelink.tests
+  EyeLinkUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: EyeLinkUITests
+    dependencies:
+      - target: EyeLink
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.3pwei.eyelink.uitests
+        TARGETED_DEVICE_FAMILY: "1"
 schemes:
   EyeLink:
     build:
       targets:
         EyeLink: all
         EyeLinkTests: [test]
+        EyeLinkUITests: [test]
     run:
       config: Debug
     test:
@@ -69,5 +86,6 @@ schemes:
       gatherCoverageData: true
       targets:
         - EyeLinkTests
+        - EyeLinkUITests
     archive:
       config: Release

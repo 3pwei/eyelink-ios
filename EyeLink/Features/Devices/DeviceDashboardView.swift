@@ -27,6 +27,7 @@ struct DeviceDashboardView: View {
                     .accessibilityIdentifier("open-examination")
                 Button("查看結果") { model.screen = .result }
                     .disabled(model.isBusy)
+                    .accessibilityIdentifier("open-result")
             }
         }
         .navigationTitle("EyeLink")

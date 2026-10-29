@@ -1,0 +1,17 @@
+# One run conditionally authorized: M2 only, 20 min, USD 2/run, USD 5/Phase 02A.
+# Account type/rate/free quota/Billing and effective stopping controls MUST be verified first.
+# No second build or automatic retry. See docs/testing/phase-02a-authorization.md.
+# No triggering, schedules, integrations, signing, or publishing configuration.
+workflows:
+  phase-02a-manual:
+    name: Phase 02A unsigned build and UI evidence (manual)
+    instance_type: mac_mini_m2
+    max_build_duration: 20
+    environment:
+      xcode: "16.4"
+    scripts:
+      - name: Generate, build, test, and package evidence
+        script: python3 scripts/run_phase02a.py
+    artifacts:
+      - artifacts/phase-02a-evidence.zip
+      - artifacts/phase-02a/**

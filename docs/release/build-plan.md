@@ -1,6 +1,10 @@
 # XcodeGen and Codemagic build plan
 
 Status: **Not executed or validated on macOS.** Phase 01 now provides [project.yml](../../project.yml); historical Phase 00 examples below are retained as planning context. Current commands and configuration are in [Phase 01 testing](../testing/phase-01.md).
+Phase 02A now prepares [manual Codemagic configuration](../../codemagic.yaml) and a
+[build/UI evidence runbook](../testing/phase-02a.md), under the owner's explicit authorization to prepare
+configuration only. This supersedes the earlier deferral of workflow YAML, not the execution/cost gate.
+No cloud workflow was started or connected. Historical examples and gates below remain background context.
 No root `project.yml`, `codemagic.yaml`, webhook, GitHub Actions workflow or signed artifact is created in Phase 00.
 Do not run these examples as-is. The Phase 00 repository contained no App or test source directories; Phase 01 adds them.
 

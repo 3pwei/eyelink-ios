@@ -46,3 +46,16 @@ it. Callers must handle that return if they need every result. Real BLE must rev
 Mock fixture: `testValue = 42`, arbitrary test points (no physical unit, no clinical meaning), measuredAt from
 an injected clock, source raw value `mock`, UI source label `Simulated`. No medical field names or GATT units
 are invented. Clock and named scenario fully determine output; no random generator is needed.
+
+## Phase 02A validation decisions (2026-10-29)
+
+| ID | Decision | Reason / scope | Verification |
+| --- | --- | --- | --- |
+| ADR-014 | Add XCUITest target; opt-in Debug composition selects MockDevice scenario or frozen snapshot adapter | Tests render existing SwiftUI views without transient-state screenshot races; fixture evidence is explicitly distinct from navigation/operation evidence. No Release fixture adapter, new product feature or domain dependency. | Implemented / Unverified; Apple SDK compilation/UI execution Blocked |
+| ADR-015 | Manual-only Codemagic, Xcode 16.4 (16F6), checksum-pinned XcodeGen 2.44.1 and explicit Simulator matrix | No trigger/signing/publishing; maximum 20 runner minutes is not a currency budget. Exact runtime/tool versions and artifacts must come from an authorized run. | First M2 run generated project and failure ZIP; Debug Build failed; no tests/Simulator. Single-run authorization consumed |
+
+Build #1 exposed XcodeGen's implicit AppIcon preset against a catalog with no icon set. The follow-up
+overrides the icon name only for Debug Simulator builds; Release/device icon requirements remain separate.
+The override is unverified on macOS. See [run evidence](../testing/evidence/phase-02a-run-01.md).
+
+Details and evidence boundaries: [Phase 02A testing](../testing/phase-02a.md).

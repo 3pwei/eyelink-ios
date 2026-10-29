@@ -11,8 +11,19 @@ struct EyeLinkApp: App {
 @MainActor
 struct EyeLinkRootView: View {
     @Environment(\.scenePhase) private var scenePhase
-    @State private var scenario: MockScenario = .success
-    @StateObject private var model = DeviceSessionModel(transport: MockDevice())
+    @State private var scenario: MockScenario
+    @StateObject private var model: DeviceSessionModel
+
+    init() {
+        #if DEBUG
+        let launch = UIValidationLaunch()
+        _scenario = State(initialValue: launch.scenario)
+        _model = StateObject(wrappedValue: launch.makeModel())
+        #else
+        _scenario = State(initialValue: .success)
+        _model = StateObject(wrappedValue: DeviceSessionModel(transport: MockDevice()))
+        #endif
+    }
 
     var body: some View {
         NavigationStack {

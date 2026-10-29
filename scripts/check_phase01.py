@@ -28,9 +28,11 @@ def main():
     check(base["CODE_SIGNING_ALLOWED"] == "NO", "Unsigned configuration")
     check(base["GENERATE_INFOPLIST_FILE"] == "YES", "Info.plist generation")
     targets = spec["targets"]
-    check(set(targets) == {"EyeLink", "EyeLinkTests"}, "App and test targets")
+    target_types = {"EyeLink": "application", "EyeLinkTests": "bundle.unit-test",
+                    "EyeLinkUITests": "bundle.ui-testing"}
+    check(set(targets) == set(target_types), "App, unit and UI test targets")
     for name, target in targets.items():
-        expected_type = "application" if name == "EyeLink" else "bundle.unit-test"
+        expected_type = target_types[name]
         check(target["type"] == expected_type, f"Target type: {name}")
         check(target["platform"] == "iOS", f"Platform: {name}")
         identifier = target["settings"]["base"]["PRODUCT_BUNDLE_IDENTIFIER"]
@@ -39,13 +41,15 @@ def main():
         for source in target["sources"]:
             check((ROOT / source["path"]).is_dir(), f"Missing source directory: {source}")
     check(targets["EyeLinkTests"]["dependencies"] == [{"target": "EyeLink"}], "Test host dependency")
-    check(spec["schemes"]["EyeLink"]["test"]["targets"] == ["EyeLinkTests"], "Test scheme")
+    check(targets["EyeLinkUITests"]["dependencies"] == [{"target": "EyeLink"}], "UI test host dependency")
+    check(spec["schemes"]["EyeLink"]["test"]["targets"] == ["EyeLinkTests", "EyeLinkUITests"], "Test scheme")
     check(any(s.get("buildPhase") == "resources" for s in targets["EyeLink"]["sources"]), "Resources phase")
     check("DEVELOPMENT_TEAM" not in (ROOT / "project.yml").read_text(), "No signing team")
     for asset in (ROOT / "EyeLink/Resources").rglob("*.json"):
         json.loads(asset.read_text())
     sources = sorted((ROOT / "EyeLink").rglob("*.swift"))
     tests = sorted((ROOT / "EyeLinkTests").rglob("*.swift"))
+    ui_tests = sorted((ROOT / "EyeLinkUITests").rglob("*.swift"))
     check(len(sources) > 0 and len(tests) > 0, "Sources and tests exist")
     for source in sources:
         content = source.read_text()
@@ -60,15 +64,24 @@ def main():
     check("Task.sleep" not in test_content and "Thread.sleep" not in test_content, "Tests must not sleep")
     cases = re.findall(r"func (test\w+)\(", test_content)
     check(len(cases) == len(set(cases)), "Unique test names")
-    check(len(cases) >= 8, "Test inventory")
-    check(not (ROOT / "codemagic.yaml").exists(), "No Codemagic configuration")
+    check(len(cases) == 24, "Preserved Phase 01 unit test inventory")
+    ui_cases = re.findall(r"func (test\w+)\(", "\n".join(path.read_text() for path in ui_tests))
+    check(len(ui_cases) == 4 and len(set(ui_cases)) == 4, "UI test inventory")
+    workflow = yaml.safe_load((ROOT / "codemagic.yaml").read_text())
+    check(set(workflow) == {"workflows"}, "Only prepared workflow definitions")
+    check(set(workflow["workflows"]) == {"phase-02a-manual"}, "One manual workflow")
+    for config in workflow["workflows"].values():
+        check("triggering" not in config and "publishing" not in config, "No automatic triggers or publishing")
+        check("integrations" not in config, "No signing integrations")
+        check(config["environment"] == {"xcode": "16.4"}, "Pinned Xcode; no signing configuration")
+        check(config["max_build_duration"] == 20, "Bounded runner time (not a cost authorization)")
     check(not list((ROOT / ".github/workflows").glob("*.y*ml")), "No active Actions workflow")
-    for path in sources + tests + [ROOT / "project.yml"]:
+    for path in sources + tests + ui_tests + [ROOT / "project.yml"]:
         data = path.read_bytes()
         check(data.endswith(b"\n") and b"\r" not in data, f"LF/final newline: {path}")
         check(all(line.rstrip() == line for line in data.splitlines()), f"Whitespace: {path}")
     print(f"PASS: project settings/path/asset/boundary checks; {len(sources)} app Swift files; "
-          f"{len(cases)} XCTest methods inventoried, NOT executed.")
+          f"{len(cases)} unit and {len(ui_cases)} UI XCTest methods inventoried, NOT executed.")
     print("XcodeGen generation, Swift compilation, iOS build and runtime tests: UNVERIFIED.")
 
 
